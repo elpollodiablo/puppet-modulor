@@ -1,0 +1,20 @@
+# configuration for service interface in network <%= @service_network_name %>
+lxc.network.type=veth
+lxc.network.flags=up
+lxc.network.link=<%= @network_definitions[@service_network_name]["bridge_name"] %>
+lxc.network.name=<%= @service_network_name %>0
+lxc.network.hwaddr = <%= scope['lxc::params::mac_prefix'] %>:<%= @network_definitions[@service_network_name]["network_number"].to_s(16) %>:<%= @network_definitions[@service_network_name]["network_number"].to_s(16) %>:<%= @host_number.to_s(16) %>
+lxc.network.ipv4=10.<%= @network_definitions[@service_network_name]["network_number"] %>.<%= @network_definitions[@service_network_name]["network_number"] %>.<%= @host_number %>/16
+lxc.network.ipv4.gateway=<%= @network_definitions[@service_network_name]["default_gateway"] %>
+lxc.network.mtu=<%= @network_definitions[@service_network_name]["mtu"] %>
+<%- @client_network_names.each do |client_network_name| -%>
+# configuration for client interface in network <%= client_network_name %>
+lxc.network.type=veth
+lxc.network.flags=up
+lxc.network.link=<%= @network_definitions[client_network_name]["bridge_name"] %>
+lxc.network.name=<%= client_network_name %>-client0
+lxc.network.hwaddr = <%= scope['lxc::params::mac_prefix'] %>:<%= @network_definitions[client_network_name]["network_number"].to_s(16) %>:<%= (@network_definitions[client_network_name]["network_number"] + 128).to_s(16) %>:<%= @host_number.to_s(16) %>
+lxc.network.ipv4=10.<%= @network_definitions[client_network_name]["network_number"] %>.<%= @network_definitions[client_network_name]["network_number"] + 128 %>.<%= @host_number %>/16
+# no default gateway for client networks
+lxc.network.mtu=<%= @network_definitions[client_network_name]["mtu"] %>
+<%- end -%>
