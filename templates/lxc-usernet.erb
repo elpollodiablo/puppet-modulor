@@ -1,0 +1,6 @@
+# PUPPET <%= @module_name %>
+<%- scope['modulor::params::lxc_users'].each do |user| -%>
+  <%- scope['modulor::params::user_definitions'][user]['accessible_networks'].each_pair do |network_name, interface_quota| -%>
+<%= user %> veth <%= scope['modulor::params::network_definitions'][network_name]['bridge_name'] %> <%= interface_quota %>
+  <%- end -%>
+<%- end -%>
