@@ -3,6 +3,7 @@ domain <%= @container_domain %>
 <%- end -%>
 <%- if @search_domains -%>
 search<%- @search_domains.each do |search_domain| -%> <%= search_domain %><%- end -%>
+
 <%- end -%>
 <%- if @nameservers -%>
 nameserver<%- @nameservers.each do |nameserver| -%> <%= nameserver %><%- end -%>
