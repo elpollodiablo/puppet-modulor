@@ -24,6 +24,7 @@ define modulor::container (
   $unprivileged_user      = undef,
   $root_authorized_key    = $::modulor::params::root_authorized_key,
   $manage_resolv_conf     = $::modulor::params::manage_resolv_conf,
+  $fix_jessie_pam_sshd    = $::modulor::params::fix_jessie_pam_sshd,
 ){
   include modulor::lxchost
   if $template =~ /.*debian.*/ {
@@ -132,6 +133,18 @@ define modulor::container (
           ],
         }
       }
+      if $fix_jessie_pam_sshd {
+        lxc::container::exec_once {"${utsname}:sed -i \"/loginuid/ s/required/optional/\" /etc/pam.d/sshd":
+          container_dir      => $my_container_dir,
+          unprivileged_user  => $unprivileged_user,
+          require            => [
+            Lxc::Container::Additional_packages[$utsname],
+            Lxc::Container[$utsname],
+            User[$unprivileged_user],
+            Group[$modulor::params::user_definitions[$unprivileged_user]['group']],
+          ],
+        }
+      }
     }
   } else {
     lxc::container {$utsname:
@@ -176,9 +189,19 @@ define modulor::container (
           ensure => present,
           content => template('modulor/puppet.conf.erb'),
           require => Lxc::Container::Additional_packages[$utsname],
-          container_dir => $container_dir,
+          container_dir => $my_container_dir,
         }
       }
+      if $root_authorized_key {
+        modulor::auth::root_authorized_key {$utsname:
+          public_key             => $root_authorized_key,
+          container_dir          => $my_container_dir,
+          require                => [
+            Lxc::Container[$utsname],
+          ],
+        }
+      }
+
     }
   }
 }

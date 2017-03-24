@@ -18,6 +18,7 @@ class modulor::params (
   $limit_cpushares,
   $root_authorized_key,
   $manage_resolv_conf,
+  $fix_jessie_pam_sshd,
 ) {
   $configured = true
 }

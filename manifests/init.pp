@@ -18,6 +18,7 @@ class modulor (
   $limit_cpushares                = undef,
   $root_authorized_key            = undef,
   $manage_resolv_conf             = true,
+  $fix_jessie_pam_sshd            = false,
 ) {
   class {"modulor::params":
     network_definitions            => $network_definitions,
@@ -39,6 +40,7 @@ class modulor (
     limit_cpushares                => $limit_cpushares,
     root_authorized_key            => $root_authorized_key,
     manage_resolv_conf             => $manage_resolv_conf,
+    fix_jessie_pam_sshd            => $fix_jessie_pam_sshd,
   }
   include lxc
   include lxc::unprivileged
