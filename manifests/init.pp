@@ -19,6 +19,8 @@ class modulor (
   $root_authorized_key            = undef,
   $manage_resolv_conf             = true,
   $fix_jessie_pam_sshd            = false,
+  $manage_lxc                     = true,
+  $manage_unprivileged_lxc        = true,
 ) {
   class {"modulor::params":
     network_definitions            => $network_definitions,
@@ -42,6 +44,10 @@ class modulor (
     manage_resolv_conf             => $manage_resolv_conf,
     fix_jessie_pam_sshd            => $fix_jessie_pam_sshd,
   }
-  include lxc
-  include lxc::unprivileged
+  if $manage_lxc {
+    include lxc
+  }
+  if $manage_unprivileged_lxc {
+    include lxc::unprivileged
+  }
 }
