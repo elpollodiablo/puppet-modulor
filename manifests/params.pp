@@ -19,6 +19,7 @@ class modulor::params (
   $root_authorized_key,
   $manage_resolv_conf,
   $fix_jessie_pam_sshd,
+  $search_domains,
 ) {
   $configured = true
 }
